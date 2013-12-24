@@ -12,10 +12,11 @@ require "./bmp_writer.rb"
  
 MOVIENAME = "circler"
 NLEDS = 120
-NTIME = 1024
+NTIME = 2500
 DILATEFACT = 2
-NYARNS = 16 
-WHITEYARNS = 0.33
+NYARNS = 60 
+STRETCH = 0.25
+WHITEYARNS = 0.50
 
 bmp = BMP::Writer.new(NLEDS, NTIME * DILATEFACT)
 movie = Array.new(NLEDS) { Array.new(NTIME, "000000") }
@@ -25,8 +26,11 @@ movie = Array.new(NLEDS) { Array.new(NTIME, "000000") }
   progress = 1.0 * j / NTIME
   rads = progress * Math::PI * 2.0
   0.upto(NYARNS - 1) do |k|
-    yarn_phase = 1.0 * k * Math::PI / (2.0 * NYARNS)
-    yarn_led = (59.9 * Math.cos(rads + yarn_phase) + 60.0).floor
+    yarn_phase = (2.0 * STRETCH) * k * Math::PI / NYARNS
+    yarn_led = (14.9 * Math.cos(rads + yarn_phase) \
+                + 18.0 * Math.sin(11.0 * (rads + yarn_phase)) \
+                - 27.0 * Math.cos(3.0 * (rads + yarn_phase)) \
+                + 60.0).floor
     red_bri = (196.0 * (k + 1) / NYARNS).floor
     whi_yarn_lim = (NYARNS * (1.0 - WHITEYARNS)).floor
     if k >= whi_yarn_lim then
@@ -40,7 +44,7 @@ end
 
 0.upto(NLEDS - 1) do |i|
   0.upto((NTIME * DILATEFACT) - 1) do |j|
-    bmp[i,j] = movie[i][j / DILATEFACT]
+    bmp[i,j] = movie[i][NTIME - 1 - j / DILATEFACT]
   end
 end 
 

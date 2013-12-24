@@ -90,7 +90,8 @@ end
 
 0.upto(NLEDS - 1) do |i|
   0.upto((NTIME * DILATEFACT) - 1) do |j|
-    bmp[i,j] = movie[i][j / DILATEFACT]
+    # time runs from bottom to top
+    bmp[i,j] = movie[i][NTIME - 1 - j / DILATEFACT]
   end
 end 
 
