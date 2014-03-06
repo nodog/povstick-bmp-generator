@@ -12,11 +12,11 @@ require "./bmp_writer.rb"
  
 MOVIENAME = "circler"
 NLEDS = 120
-NTIME = 2500
-DILATEFACT = 2
-NYARNS = 60 
-STRETCH = 0.25
-WHITEYARNS = 0.50
+NTIME = 5000
+DILATEFACT = 1
+NYARNS = 120 
+STRETCH = 0.5
+WHITEYARNS = 0.05
 
 bmp = BMP::Writer.new(NLEDS, NTIME * DILATEFACT)
 movie = Array.new(NLEDS) { Array.new(NTIME, "000000") }
@@ -27,9 +27,9 @@ movie = Array.new(NLEDS) { Array.new(NTIME, "000000") }
   rads = progress * Math::PI * 2.0
   0.upto(NYARNS - 1) do |k|
     yarn_phase = (2.0 * STRETCH) * k * Math::PI / NYARNS
-    yarn_led = (14.9 * Math.cos(rads + yarn_phase) \
-                + 18.0 * Math.sin(11.0 * (rads + yarn_phase)) \
-                - 27.0 * Math.cos(3.0 * (rads + yarn_phase)) \
+    yarn_led = (9.9 * Math.cos(rads + yarn_phase) \
+                + 20.0 * Math.sin(5.0 * (rads + yarn_phase)) \
+                - 30.0 * Math.cos(7.0 * (rads + yarn_phase)) \
                 + 60.0).floor
     red_bri = (196.0 * (k + 1) / NYARNS).floor
     whi_yarn_lim = (NYARNS * (1.0 - WHITEYARNS)).floor
@@ -38,7 +38,14 @@ movie = Array.new(NLEDS) { Array.new(NTIME, "000000") }
     else
       whi_bri = 0
     end
-    movie[yarn_led][j] = sprintf("%02x%02x%02x", whi_bri, whi_bri, red_bri)
+    # white trail to red
+    #movie[yarn_led][j] = sprintf("%02x%02x%02x", whi_bri, whi_bri, red_bri)
+    # yellow trail to red
+    #movie[yarn_led][j] = sprintf("%02x%02x%02x", 0, whi_bri, red_bri)
+    # pink trail to blue
+    #movie[yarn_led][j] = sprintf("%02x%02x%02x", red_bri, 0, whi_bri)
+    # teal trail to green
+    movie[yarn_led][j] = sprintf("%02x%02x%02x", whi_bri, red_bri, 0)
   end
 end
 
